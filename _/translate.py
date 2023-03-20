@@ -16,7 +16,7 @@ def translate(cadena):
 		return cadena
 
 
-msgid = False
+paragraph = []
 string = ""
 string_t = ""
 pat = r'"(.*?)"'
@@ -27,20 +27,30 @@ j = 0
 file_l = readFile()
 file_r = open("django.po", "w")
 for linea in file_l:
-	if (linea[0:5] == "msgid"):
-		string = re.findall(pat,linea)
-		string_t = translate(string[0])
+	if (linea[0] == '"'):
+		paragraph = paragraph + (re.findall(pat,linea))
 		file_r.write(linea)
-		i =i+1
-		print (i)
+		print('doble comillas')
+	elif (linea[0:5] == "msgid"):
+		string = re.findall(pat,linea)
+		if (string[0] == ''):
+			#print('vacia')
+			print(string)
+		else:
+			string_t = translate(string[0])
+			file_r.write(linea)
+			i =i+1
+			print (i)
+			#print(string)
 	elif (linea[0:6] == "msgstr"):
-		print(linea[0:6])
+		#print(linea[0:6])
 		file_r.write('msgstr "' + string_t + '"')
 		file_r.write('\n')
-		print('msgstr "' + string_t + '"')
+		#print('msgstr "' + string_t + '"')
 		j = j+1
-		print (j)
+		#print (j)
 	else:
 		file_r.write(linea)
+print(paragraph)
 file_r.close()
 
